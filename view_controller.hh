@@ -11,7 +11,7 @@ class ViewController : public QObject {
 
 public:
   static ViewController* getInstance();
-  
+
   void ShowHomeView(bool show);
   void ShowPreviewView(bool show);
 

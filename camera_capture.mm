@@ -13,7 +13,7 @@
     didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
            fromConnection:(AVCaptureConnection*)connection {
   AVFRAME frame = CMSampleBufferRefToAVFRAME(sampleBuffer);
-  CameraCapture::getInstance()->InjectFrame(frame); 
+  CameraCapture::getInstance()->InjectFrame(frame);
 }
 @end
 
@@ -47,7 +47,7 @@ void CameraCapture::UnRegister(CameraCaptureListener* listener) {
 
 void CameraCapture::InjectFrame(AVFRAME frame) {
   for (auto listener : listeners_) {
-    listener->OnCameraFrame(frame); 
+    listener->OnCameraFrame(frame);
   }
   ReleaseAVFRAME(frame);
 }

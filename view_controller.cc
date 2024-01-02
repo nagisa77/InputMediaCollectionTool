@@ -1,11 +1,9 @@
 
 #include "view_controller.hh"
 
-ViewController::ViewController(QObject* parent)
-    : QObject(parent) {}
+ViewController::ViewController(QObject* parent) : QObject(parent) {}
 
-ViewController::~ViewController() {
-}
+ViewController::~ViewController() {}
 
 ViewController* ViewController::getInstance() {
   static ViewController vc;

@@ -14,6 +14,7 @@ public:
 
   virtual void OnCameraFrame(AVFRAME frame) override;
   void paintEvent(QPaintEvent* event) override;
+  void closeEvent(QCloseEvent* event) override;
 
   void renderFrame(QImage frame);
 
