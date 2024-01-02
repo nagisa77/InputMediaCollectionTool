@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include "camera_capture.hh"
+#include "view_controller.hh"
 
 HomeView::HomeView(QWidget* parent) : QWidget(parent) {
   capture_audio_button_ = new QPushButton("Capture Audio");
@@ -32,6 +33,7 @@ void HomeView::onCaptureAudioClicked() {
 void HomeView::onCaptureCameraClicked() {
   spdlog::info("Capture Camera clicked");
   CameraCapture::getInstance()->Start(true);
+  ViewController::getInstance()->ShowPreviewView(true);
 }
 
 void HomeView::onCaptureScreenClicked() {

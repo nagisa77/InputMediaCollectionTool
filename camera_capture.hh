@@ -7,19 +7,20 @@
 #include "frame.hh"
 
 class CameraCaptureListener {
- public:
+public:
   virtual ~CameraCaptureListener() {}
   virtual void OnCameraFrame(AVFRAME frame) = 0;
 };
 
 class CameraCapture {
- public:
+public:
   void Start(bool enable);
   void Register(CameraCaptureListener* listener);
   void UnRegister(CameraCaptureListener* listener);
   static CameraCapture* getInstance();
+  void InjectFrame(AVFRAME frame);
 
- private:
+private:
   CameraCapture();
   ~CameraCapture();
 
@@ -31,4 +32,4 @@ class CameraCapture {
   bool capture_running_ = false;
 };
 
-#endif  // CAMERA_CAPTURE_H
+#endif // CAMERA_CAPTURE_H

@@ -6,19 +6,20 @@
 #include <QWidget>
 
 class HomeView : public QWidget {
-  Q_OBJECT  // 这个宏用于启用 Qt 的元对象系统
+  Q_OBJECT
 
-      public : HomeView(QWidget* parent = nullptr);
+public:
+  HomeView(QWidget* parent = nullptr);
 
- private slots:  // 槽函数声明
+private slots: // 槽函数声明
   void onCaptureAudioClicked();
   void onCaptureCameraClicked();
   void onCaptureScreenClicked();
 
- private:
+private:
   QPushButton* capture_audio_button_;
   QPushButton* capture_camera_button_;
   QPushButton* capture_screen_button_;
 };
 
-#endif  // HOME_VIEW_H
+#endif // HOME_VIEW_H

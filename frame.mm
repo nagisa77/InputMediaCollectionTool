@@ -5,7 +5,7 @@ extern "C" {
 }
 #import <CoreMedia/CoreMedia.h>
 
-AVFRAME CMSampleBufferRefToAVFRAME(void *ref) {
+AVFRAME CMSampleBufferRefToAVFRAME(void* ref) {
   CMSampleBufferRef sampleBuffer = (CMSampleBufferRef)ref;
   if (!sampleBuffer) {
     return nullptr;
@@ -19,7 +19,7 @@ AVFRAME CMSampleBufferRefToAVFRAME(void *ref) {
 
   // 锁定像素缓冲区的基地址
   CVPixelBufferLockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
-  void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+  void* baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
 
   // 获取图像的维度和行字节
   size_t width = CVPixelBufferGetWidth(imageBuffer);
@@ -27,13 +27,26 @@ AVFRAME CMSampleBufferRefToAVFRAME(void *ref) {
   size_t stride = CVPixelBufferGetBytesPerRow(imageBuffer);
 
   // 创建一个 AVFrame
-  AVFrame *frame = av_frame_alloc();
+  AVFrame* frame = av_frame_alloc();
   if (!frame) {
     CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
     return nullptr;
   }
 
-  frame->format = AV_PIX_FMT_NV12;  // 假设样本缓冲区是 NV12 格式
+  OSType pixelFormat = CVPixelBufferGetPixelFormatType(imageBuffer);
+  switch (pixelFormat) {
+  case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange: // NV12
+    frame->format = AV_PIX_FMT_NV12;
+    break;
+  case kCVPixelFormatType_422YpCbCr8:
+    frame->format = AV_PIX_FMT_VUYA;
+    break;
+  default:
+    av_frame_free(&frame);
+    CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
+    return nullptr;
+  }
+
   frame->width = static_cast<int>(width);
   frame->height = static_cast<int>(height);
 
@@ -48,10 +61,10 @@ AVFRAME CMSampleBufferRefToAVFRAME(void *ref) {
   // 将原始数据复制到 AVFrame 缓冲区
   if (frame->format == AV_PIX_FMT_NV12) {
     // NV12 需要特殊处理，因为它是一个半平面格式
-    uint8_t *yDest = frame->data[0];
-    uint8_t *uvDest = frame->data[1];
-    uint8_t *ySrc = static_cast<uint8_t *>(baseAddress);
-    uint8_t *uvSrc = ySrc + (height * stride);
+    uint8_t* yDest = frame->data[0];
+    uint8_t* uvDest = frame->data[1];
+    uint8_t* ySrc = static_cast<uint8_t*>(baseAddress);
+    uint8_t* uvSrc = ySrc + (height * stride);
 
     for (int i = 0; i < height; i++) {
       memcpy(yDest, ySrc, width);
@@ -69,4 +82,12 @@ AVFRAME CMSampleBufferRefToAVFRAME(void *ref) {
 
   CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
   return frame;
+}
+
+void ReleaseAVFRAME(AVFRAME frame) {
+  if (!frame) {
+    return;
+  }
+  AVFrame* av_frame = (AVFrame*)frame;
+  av_frame_free(&av_frame); 
 }

@@ -5,4 +5,6 @@
 
 AVFRAME CMSampleBufferRefToAVFRAME(void* ref);
 
+void ReleaseAVFRAME(AVFRAME frame);
+
 #endif

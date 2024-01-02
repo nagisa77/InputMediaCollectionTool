@@ -1,12 +1,11 @@
 #include <QApplication>
 
-#include "home_view.hh"
+#include "view_controller.hh"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
-
-  HomeView homeView;
-  homeView.show();
-
+  
+  ViewController::getInstance()->ShowHomeView(true);
+  
   return app.exec();
 }
