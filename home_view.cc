@@ -32,10 +32,19 @@ void HomeView::onCaptureAudioClicked() {
 
 void HomeView::onCaptureCameraClicked() {
   spdlog::info("Capture Camera clicked");
+  
   CameraCapture::getInstance()->Start(true);
   ViewController::getInstance()->ShowPreviewView(true);
 }
 
 void HomeView::onCaptureScreenClicked() {
   spdlog::info("Capture Screen clicked");
+  
+  ScreenCapture::getInstance()->Start(true);
+  ViewController::getInstance()->ShowPreviewView(true);
+}
+
+void HomeView::closeEvent(QCloseEvent* event) {
+  ViewController::getInstance()->ShowHomeView(false);
+  QWidget::closeEvent(event);
 }

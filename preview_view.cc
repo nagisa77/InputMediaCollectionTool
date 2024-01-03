@@ -15,19 +15,30 @@ PreviewView::PreviewView(QWidget* parent) : QWidget(parent) {
   connect(this, &PreviewView::frameReady, this, &PreviewView::renderFrame);
 
   CameraCapture::getInstance()->Register(this);
+  ScreenCapture::getInstance()->Register(this);
 }
 
 PreviewView::~PreviewView() {
   CameraCapture::getInstance()->UnRegister(this);
   CameraCapture::getInstance()->Start(false);
+  
+  ScreenCapture::getInstance()->UnRegister(this);
+  ScreenCapture::getInstance()->Start(false);
 }
 
 void PreviewView::closeEvent(QCloseEvent* event) {
-  ViewController::getInstance()->ShowPreviewView(false); 
+  ViewController::getInstance()->ShowPreviewView(false);
   QWidget::closeEvent(event);
 }
 
 void PreviewView::OnCameraFrame(AVFRAME frame) {
+  if (frame) {
+    QImage image = convertToQImage(frame);
+    emit frameReady(image);
+  }
+}
+
+void PreviewView::OnScreenFrame(AVFRAME frame) {
   if (frame) {
     QImage image = convertToQImage(frame);
     emit frameReady(image);
@@ -39,13 +50,15 @@ QImage PreviewView::convertToQImage(AVFRAME f) {
   if (!frame) {
     return QImage();
   }
-
+  
   static SwsContext* sws_ctx = nullptr;
-  AVPixelFormat src_pix_fmt = (AVPixelFormat)frame->format; // 设置源格式为 YUYV422
-  AVPixelFormat dst_pix_fmt = AV_PIX_FMT_RGBA;    // 目标格式为 ARGB
+  static AVPixelFormat last_format = AV_PIX_FMT_NONE;
+  AVPixelFormat src_pix_fmt = (AVPixelFormat)frame->format;
+  AVPixelFormat dst_pix_fmt = AV_PIX_FMT_RGBA;
 
   // 检查是否需要重新创建转换上下文
-  if (!sws_ctx || frame->format != src_pix_fmt) {
+  if (!sws_ctx || frame->format != last_format) {
+    last_format = src_pix_fmt; 
     if (sws_ctx) {
       sws_freeContext(sws_ctx);
     }

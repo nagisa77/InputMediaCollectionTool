@@ -90,14 +90,3 @@ void CameraCapture::StopCapture() {
   capture_session_ = nullptr;
   capture_running_ = false;
 }
-
-// void CameraCapture::CaptureOutput(/* 参数 */) {
-//   AVFrame* frame = av_frame_alloc();
-//   // 填充 frame 数据
-//
-//   for (auto listener : listeners_) {
-//     listener->OnCameraFrame(frame);
-//   }
-//
-//   av_frame_free(&frame);
-// }

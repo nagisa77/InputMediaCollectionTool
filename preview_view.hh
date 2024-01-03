@@ -2,10 +2,14 @@
 #ifndef PREVIEWVIEW_H
 #define PREVIEWVIEW_H
 #include "camera_capture.hh"
+#include "screen_capture.hh"
 #include <QImage>
 #include <QWidget>
 
-class PreviewView : public QWidget, public CameraCaptureListener {
+class PreviewView :
+public QWidget,
+public ScreenCaptureListener,
+public CameraCaptureListener {
   Q_OBJECT
 
 public:
@@ -13,6 +17,7 @@ public:
   virtual ~PreviewView();
 
   virtual void OnCameraFrame(AVFRAME frame) override;
+  virtual void OnScreenFrame(AVFRAME frame) override;
   void paintEvent(QPaintEvent* event) override;
   void closeEvent(QCloseEvent* event) override;
 

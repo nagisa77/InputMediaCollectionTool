@@ -13,6 +13,8 @@ find_package(spdlog REQUIRED)
 
 find_library(COCOA_LIBRARY Cocoa)
 
+find_library(SCREEN_CAPTURE_KIT_LIBRARY ScreenCaptureKit)
+
 find_library(AVFOUNDATION_LIBRARY AVFoundation)
 
 find_path(FFMPEG_INCLUDE_DIR libavformat/avformat.h)
@@ -39,6 +41,7 @@ target_link_libraries(InputMediaCollectionTool
   Qt6::Widgets
   spdlog::spdlog
   ${COCOA_LIBRARY}
+  ${SCREEN_CAPTURE_KIT_LIBRARY}
   ${AVFOUNDATION_LIBRARY}
   ${AVFORMAT_LIBRARY}
   ${AVCODEC_LIBRARY}

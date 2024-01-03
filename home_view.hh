@@ -10,6 +10,7 @@ class HomeView : public QWidget {
 
 public:
   HomeView(QWidget* parent = nullptr);
+  void closeEvent(QCloseEvent* event) override;
 
 private slots: // 槽函数声明
   void onCaptureAudioClicked();

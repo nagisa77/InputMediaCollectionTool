@@ -35,6 +35,9 @@ AVFRAME CMSampleBufferRefToAVFRAME(void* ref) {
   case kCVPixelFormatType_422YpCbCr8: // AV_PIX_FMT_UYVY422
     avPixelFormat = AV_PIX_FMT_UYVY422;
     break;
+  case kCVPixelFormatType_32BGRA:
+    avPixelFormat = AV_PIX_FMT_BGRA;
+    break;
   default:
     av_frame_free(&frame);
     CVPixelBufferUnlockBaseAddress(imageBuffer, kCVPixelBufferLock_ReadOnly);
@@ -52,8 +55,8 @@ AVFRAME CMSampleBufferRefToAVFRAME(void* ref) {
     return nullptr;
   }
 
-  // 复制数据
-  if (avPixelFormat == AV_PIX_FMT_UYVY422) {
+  if (avPixelFormat == AV_PIX_FMT_UYVY422 ||
+      avPixelFormat == AV_PIX_FMT_BGRA) {
     uint8_t* src = (uint8_t*)baseAddress;
     for (int i = 0; i < height; ++i) {
       memcpy(frame->data[0] + i * frame->linesize[0], src + i * stride, stride);
